@@ -2,10 +2,9 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-main-layout',
   imports: [RouterOutlet],
-  template: `<router-outlet></router-outlet>`,
+  templateUrl: './main-layout.component.html',
+  styles: ``,
 })
-export class AppComponent {
-  title = 'auth-rbca';
-}
+export class MainLayoutComponent {}
