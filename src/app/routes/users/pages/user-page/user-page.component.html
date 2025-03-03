@@ -1,0 +1,100 @@
+<div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-6">
+  <div class="flex flex-wrap gap-4 justify-between items-center">
+    <div class="flex items-center gap-4">
+      <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-3">
+        <i class="fas fa-users-cog text-rose-500 text-3xl"></i>
+        <div>
+          Gestión de Usuarios
+          <span class="text-sm font-normal text-gray-500 ml-2"
+            >({{ total() }} registros)</span
+          >
+        </div>
+      </h2>
+    </div>
+
+    <div class="flex flex-wrap gap-4 grow justify-end items-center">
+      <app-search-user (search)="onSearch($event)"></app-search-user>
+      <div class="flex gap-2">
+        <button
+          *hasPermission="{ action: 'delete', object: 'users' }"
+          class="flex items-center gap-2 px-4 py-2.5 bg-orange-400 hover:bg-orange-500 text-white rounded-lg transition-all"
+        >
+          <i class="fas fa-file-export"></i>
+          <span class="text-sm">Exportar</span>
+        </button>
+
+        <!-- Con template alternativo -->
+        <ng-container
+          *hasPermission="
+            { action: 'create', object: 'users' };
+            else noPermission
+          "
+        >
+          <button
+            (click)="openModal()"
+            class="flex items-center gap-2 px-4 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-lg transition-all"
+          >
+            <i class="fas fa-plus"></i>
+            <span class="text-sm">Nuevo usuarios</span>
+          </button>
+        </ng-container>
+
+        <ng-template #noPermission>
+          <button
+            class="bg-red-500 font-bold text-[15px] p-2 rounded-md text-white"
+            disabled
+          >
+            <i class="fas fa-warning"></i>
+
+            Acceso Restringido
+          </button>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="mt-4 pt-4 border-t border-gray-100 flex flex-wrap gap-3 items-center"
+  >
+    <div class="flex items-center gap-2">
+      <button
+        class="flex items-center gap-2 px-3 py-1.5 text-sm bg-orange-50 text-orange-700 rounded-lg hover:bg-orange-100 transition-colors"
+      >
+        <i class="fas fa-filter text-orange-500"></i>
+        Estado: Activos
+      </button>
+
+      <button
+        class="flex items-center gap-2 px-3 py-1.5 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors"
+      >
+        <i class="fas fa-tag"></i>
+        Tipo: Administrador
+      </button>
+    </div>
+
+    <button
+      (click)="refreshPage()"
+      class="p-2 cursor-pointer hover:bg-gray-100 rounded-lg text-gray-500 hover:text-gray-700 transition-colors"
+    >
+      <i class="fas fa-sync-alt"></i>
+    </button>
+  </div>
+</div>
+
+<app-user-table
+  [users]="users()"
+  [total]="total()"
+  [pageSize]="pageSize()"
+  [page]="page()"
+  [loading]="isLoading()"
+  (pageChanged)="pageChanged($event)"
+  (changePageSize)="changePageSize($event)"
+  (deleteUser)="deleteUser($event)"
+></app-user-table>
+
+@if (showModal()) {
+<app-create-user-modal
+  (close)="closeModal()"
+  (userCreated)="refreshPage()"
+></app-create-user-modal>
+}

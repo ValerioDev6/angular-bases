@@ -1,0 +1,104 @@
+<div class="bg-white rounded-lg shadow overflow-hidden">
+  <table class="w-full">
+    <thead>
+      <tr class="bg-gray-50 text-left">
+        <th class="px-6 py-4 text-gray-700 font-medium">Nombre</th>
+        <th class="px-6 py-4 text-gray-700 font-medium">Email</th>
+        <th
+          class="px-6 py-4 text-gray-700 font-medium cursor-pointer flex items-center"
+        >
+          Fecha de creación <i class="fas fa-sort-down ml-1"></i>
+        </th>
+        <th class="px-6 py-4 text-gray-700 font-medium text-center">Estado</th>
+        <th class="px-6 py-4 text-gray-700 font-medium text-center">
+          Acciones
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (user of users | paginate : { id: 'users-pagination', itemsPerPage:
+      pageSize, currentPage: page, totalItems: total }; track user.id) {
+      <tr>
+        <td class="px-6 py-4 font-medium">{{ user.roles.name }}</td>
+        <td class="px-6 py-4">{{ user.email }}</td>
+        <td class="px-6 py-4">{{ user.created_at | date : "short" }}</td>
+        <td class="px-6 py-4 text-center">
+          <span
+            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-emerald-100 text-emerald-800"
+          >
+            <svg class="w-2 h-2 mr-2 fill-current" viewBox="0 0 8 8">
+              <circle cx="4" cy="4" r="3" />
+            </svg>
+            Activo
+          </span>
+        </td>
+
+        <td class="px-6 py-4 flex justify-center gap-2">
+          <button
+            class="w-8 h-8 cursor-pointer bg-blue-100 rounded-full flex items-center justify-center text-blue-600"
+          >
+            <i class="fas fa-pencil-alt"></i>
+          </button>
+          <button
+            (click)="onDeleteUser(user)"
+            class="w-8 h-8 cursor-pointer bg-red-100 rounded-full flex items-center justify-center text-red-600"
+          >
+            <i class="fas fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+
+  <div
+    *ngIf="users.length === 0 && !loading"
+    class="text-center py-8 text-gray-500"
+  >
+    No se encontraron usuarios
+  </div>
+
+  <div *ngIf="loading" class="text-center py-8 text-gray-500">
+    <div
+      class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-700"
+    ></div>
+    <p class="mt-2">Cargando usuarios...</p>
+  </div>
+</div>
+
+<!-- Pagination -->
+<div class="mt-6 flex justify-between items-center flex-wrap">
+  <div class="text-sm text-gray-600">
+    Mostrando {{ users.length }} de {{ total }} usuarios
+  </div>
+
+  <!-- Page size selector -->
+  <div class="mb-4 md:mb-0">
+    <label class="text-sm text-gray-600 mr-2">Mostrar:</label>
+    <select
+      [(ngModel)]="pageSize"
+      (change)="onChangePageSize($event)"
+      class="border border-gray-300 rounded px-2 py-1 text-sm"
+    >
+      <option [value]="5">5</option>
+      <option [value]="10">10</option>
+      <option [value]="20">20</option>
+      <option [value]="50">50</option>
+    </select>
+  </div>
+
+  <!-- ngx-pagination controls -->
+  <pagination-controls
+    id="users-pagination"
+    (pageChange)="onPageChange($event)"
+    (pageBoundsCorrection)="onPageChange($event)"
+    previousLabel="Anterior"
+    nextLabel="Siguiente"
+    [maxSize]="5"
+    [directionLinks]="true"
+    boundaryLinks="true"
+    [autoHide]="true"
+    [responsive]="true"
+    class="pagination-controls"
+  ></pagination-controls>
+</div>

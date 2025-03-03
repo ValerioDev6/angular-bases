@@ -1,0 +1,8 @@
+@let usuario = user();
+<p>home-page works!</p>
+
+@if (usuario) {
+<p class="font-bold text-4xl uppercase">Bienvenido {{ usuario.user.email }}</p>
+} @else {
+<p>Cargando data...</p>
+}

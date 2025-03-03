@@ -7,13 +7,17 @@ import {
 
 import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { AuthInterceptorHttpService } from '@core/interceptors/auth.interceptor';
+import { ErrorInterceptor } from '@core/interceptors/error.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideAnimationsAsync(),
     provideRouter(routes, withViewTransitions(), withComponentInputBinding()),
-    provideHttpClient(),
+    provideHttpClient(
+      withInterceptors([AuthInterceptorHttpService, ErrorInterceptor])
+    ),
   ],
 };

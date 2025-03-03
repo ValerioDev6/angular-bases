@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { isLoggedGuard, isntLoggedGuard } from '@core/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -8,14 +9,18 @@ export const routes: Routes = [
   },
   {
     path: 'auth',
+    canActivate: [isntLoggedGuard],
+
     loadChildren: () =>
-      import('./modules/auth/auth.routes').then((m) => m.AUTH_ROUTES),
+      import('./routes/auth/auth.routes').then((m) => m.AUTH_ROUTES),
   },
 
   {
     path: 'admin',
+    canActivate: [isLoggedGuard],
+
     loadChildren: () =>
-      import('../app/core/layout/layout.routes').then((m) => m.LAYOUT_ROUTES),
+      import('./core/layout/route/layout.routes').then((m) => m.LAYOUT_ROUTES),
   },
 
   {

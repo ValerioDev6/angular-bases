@@ -1,0 +1,64 @@
+<!-- sidebar.component.html con colores actualizados -->
+<nav class="flex-1 overflow-y-auto overflow-x-hidden py-4">
+  <ul class="space-y-1">
+    @for (route of routes; track route.path) { @if (!route.requiredRoles ||
+    hasRole(route.requiredRoles)) {
+
+    <li
+      [class.rounded-md]="hasSubRoutes(route)"
+      [class.overflow-hidden]="hasSubRoutes(route)"
+    >
+      <!-- Ruta principal -->
+      @if (hasSubRoutes(route)) {
+      <div
+        (click)="toggleMenu(route)"
+        class="px-4 py-3 flex items-center gap-3 cursor-pointer"
+        [class.bg-indigo-800]="isMenuOpen(route)"
+        [class.hover:bg-[#262145]]="!isMenuOpen(route)"
+      >
+        <i class="{{ route.icon }} text-white  "></i>
+        @if(!isCollapsed()) {
+        <span class="text-sm whitespace-nowrap font-medium">{{
+          route.label
+        }}</span>
+        <i
+          class="text-white text-xs ml-auto fas"
+          [class.fa-chevron-up]="isMenuOpen(route)"
+          [class.fa-chevron-down]="!isMenuOpen(route)"
+        ></i>
+        }
+      </div>
+
+      <!-- Subrutas -->
+      @if(isMenuOpen(route) && !isCollapsed()) {
+      <div class="bg-[#151329]/50">
+        @for (subRoute of route.subRoutes; track subRoute.path) {
+        <a
+          class="pl-10 px-4 py-2 flex items-center gap-3 hover:bg-indigo-800 cursor-pointer"
+          [routerLink]="subRoute.path"
+          routerLinkActive="router-link-active"
+          [routerLinkActiveOptions]="{ exact: false }"
+        >
+          <i class="{{ subRoute.icon }} text-xs text-indigo-300"></i>
+          <span class="text-xs">{{ subRoute.label }}</span>
+        </a>
+        }
+      </div>
+      } } @else {
+      <a
+        class="px-4 py-3 flex items-center gap-3 hover:bg-[#262145] cursor-pointer"
+        [routerLink]="route.path"
+        routerLinkActive="bg-indigo-800"
+      >
+        <i class="{{ route.icon }} text-white"></i>
+        @if(!isCollapsed()) {
+        <span class="text-sm font-medium">{{ route.label }}</span>
+        @if(route.hasChevron) {
+        <i class="fas fa-chevron-right ml-auto text-xs text-indigo-300"></i>
+        } }
+      </a>
+      }
+    </li>
+    } }
+  </ul>
+</nav>

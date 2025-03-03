@@ -1,0 +1,177 @@
+<div
+  class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100"
+>
+  <table class="w-full divide-y divide-gray-200">
+    <thead class="bg-gray-50">
+      <tr>
+        <th
+          class="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider"
+        >
+          Nombre
+        </th>
+        <th
+          class="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider"
+        >
+          Permisos
+        </th>
+        <th
+          class="px-6 py-4 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider"
+        >
+          Estado
+        </th>
+        <th
+          class="px-6 py-4 text-center text-sm font-semibold text-gray-700 uppercase tracking-wider"
+        >
+          Acciones
+        </th>
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-200">
+      @for (rol of roles() | paginate : { id: 'roles-pagination', itemsPerPage:
+      pageSize(), currentPage: page(), totalItems: total() }; track rol.name) {
+      <tr class="hover:bg-gray-50 transition-colors">
+        <td class="px-6 py-4 whitespace-nowrap">
+          <div class="text-sm font-medium text-gray-900">{{ rol.name }}</div>
+        </td>
+
+        <td class="px-6 py-4">
+          <div class="flex flex-wrap gap-2">
+            @for (perm of rol.role_permissions; track perm.permissions.action) {
+            <span
+              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800"
+            >
+              {{ perm.permissions.action }}
+            </span>
+            }
+          </div>
+        </td>
+
+        <td class="px-6 py-4 text-center">
+          <span
+            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-emerald-100 text-emerald-800"
+          >
+            <svg class="w-2 h-2 mr-2 fill-current" viewBox="0 0 8 8">
+              <circle cx="4" cy="4" r="3" />
+            </svg>
+            Activo
+          </span>
+        </td>
+
+        <td class="px-6 py-4 whitespace-nowrap text-center">
+          <div class="flex justify-center space-x-3">
+            <button
+              class="text-gray-400 cursor-pointer hover:text-slate-950 transition-colors"
+              title="Editar"
+              (click)="onViewRol(rol)"
+            >
+              <i class="fas fa-eye text-lg"></i>
+            </button>
+            <button
+              class="text-gray-400 cursor-pointer hover:text-blue-600 transition-colors"
+              title="Editar"
+              (click)="onEditRol(rol)"
+            >
+              <i class="fas fa-edit text-lg"></i>
+            </button>
+
+            <button
+              class="text-gray-400 cursor-pointer hover:text-red-600 transition-colors"
+              title="Eliminar"
+              (click)="onDeleteRol(rol)"
+            >
+              <i class="fas fa-trash text-lg"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+
+  <!-- Mensaje sin datos -->
+  @if (roles().length === 0 && !loading()) {
+  <div class="text-center py-12">
+    <div class="text-gray-400 mb-4">
+      <svg
+        class="w-12 h-12 mx-auto"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v14a2 2 0 01-2 2zM9 9h6m-6 4h6m-6 4h6"
+        />
+      </svg>
+    </div>
+    <p class="text-gray-500 text-sm">No se encontraron roles registrados</p>
+  </div>
+  }
+
+  <!-- Loading spinner -->
+  @if (loading()) {
+  <div class="py-12 flex flex-col items-center justify-center">
+    <div class="animate-spin mb-4">
+      <svg
+        class="w-8 h-8 text-purple-600"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+        />
+      </svg>
+    </div>
+    <p class="text-gray-500 text-sm">Cargando lista de roles...</p>
+  </div>
+  }
+</div>
+
+<!-- Pagination -->
+<div
+  class="mt-6 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0"
+>
+  <div class="text-sm text-gray-500">
+    Mostrando <span class="font-medium">{{ roles().length }}</span> de
+    <span class="font-medium">{{ total() }}</span> resultados
+  </div>
+
+  <!-- Page size selector -->
+  <div class="flex items-center space-x-2">
+    <span class="text-sm text-gray-500">Mostrar:</span>
+    <select
+      [ngModel]="pageSize()"
+      (change)="onChangePageSize($event)"
+      class="block w-20 pl-3 pr-8 py-1.5 text-base border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
+    >
+      <option value="5">5</option>
+      <option value="10">10</option>
+      <option value="20">20</option>
+      <option value="50">50</option>
+    </select>
+  </div>
+
+  <!-- Pagination controls -->
+  <div class="flex space-x-2">
+    <!-- Aquí irían los números de página -->
+    <pagination-controls
+      id="roles-pagination"
+      (pageChange)="onPageChange($event)"
+      (pageBoundsCorrection)="onPageChange($event)"
+      previousLabel="Anterior"
+      nextLabel="Siguiente"
+      [maxSize]="5"
+      [directionLinks]="true"
+      boundaryLinks="true"
+      [autoHide]="true"
+      [responsive]="true"
+      class="pagination-controls"
+    ></pagination-controls>
+  </div>
+</div>

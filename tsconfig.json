@@ -8,11 +8,13 @@
     "paths": {
       "@core/*": ["src/app/core/*"],
       "@environments/*": ["src/environments/*"],
-      "@modules/*": ["src/app/modules/*"],
+      "@modules/*": ["src/app/routes/*"],
       "@constants/*": ["src/app/core/constants/*"],
       "@services/*": ["src/app/core/services/*"],
+      "@guards/*": ["src/app/core/guards/*"],
       "@interceptors/*": ["src/app/core/interceptors/*"],
-      "@layout/*": ["src/app/core/layout/*"]
+      "@layout/*": ["src/app/core/layout/*"],
+      "@shared/*": ["src/app/shared/services/*"]
     },
     "strict": true,
     "noImplicitOverride": true,
